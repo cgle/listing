@@ -1,0 +1,68 @@
+<html>
+    <head>        
+        <meta charset='utf-8'>
+        <link rel="icon" href="/static/img/logo180x180.png">
+        <meta name="description" content="Bookmark your apartment finds">
+        <meta name="keywords" content="apartments,bookmark,extension,chrome">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>TAKIU | Bookmark your apartment finds</title>
+        <!-- IOS MANIFEST -->
+        <link rel="apple-touch-icon" href="touch-icon-iphone.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="/static/img/logo152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="/static/img/logo180x180.png">
+        <link rel="apple-touch-icon" sizes="167x167" href="/static/img/logo167x167.png">        
+        <meta name="apple-mobile-web-app-title" content="WUTLIST">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+
+        <link rel="canonical" href="/" />
+        <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.2/build/pure-min.css" integrity="sha384-UQiGfs9ICog+LwheBSRCt1o5cbyKIHbwjWscjemyBMT9YCUMZffs6UqUTd0hObXD" crossorigin="anonymous">
+        <!--[if lte IE 8]>
+        <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.2/build/grids-responsive-old-ie-min.css">
+        <![endif]-->
+        <!--[if gt IE 8]><!-->
+        <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.2/build/grids-responsive-min.css">
+        <!--<![endif]-->
+        <link rel='stylesheet' type="text/css" href='/static/css/main.css'></link>
+        {% block style %} {% end %}
+    </head>
+    <body>
+        
+    <div class='container'>
+        <div class='top-bar'>
+            <a href='/'>
+                <div class='logo'></div>
+                <div class='site-name'>TAKIU</div>
+            </a>
+
+            <ul class='nav-links'>
+                <li><a href='/about'>about</a></li>
+                <li><a href='/tutorial'>tutorial</a></li>
+                <li><a href='/contact'>contact</a></li>
+                {% if not current_user %}
+                <li><a href='/login'>log in</a></li>
+                {% else %}
+                <li><a href='/logout'>log out</a></li>
+                {% end %}
+            </ul>
+        </div>
+    
+        <div class='content-wrapper'>
+            {% block content %} {% end %}
+        </div>
+
+        <div class='footer'>
+        </div>
+    </div>
+    
+    <script type="text/javascript" src='/static/js/jquery-3.2.1.min.js'></script>
+    <script type="text/javascript" src='/static/js/common.js'></script>
+
+    <script>
+        // GLOBAL VARIABLES
+        var CURRENT_USER = {% if current_user %}"{{current_user}}"{% else %}null{% end %};
+    </script>
+    {% block script %}
+    {% end %}
+    </body>
+</html>
+

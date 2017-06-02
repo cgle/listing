@@ -1,0 +1,131 @@
+body {
+    width: 100%;
+    font-size: 14px;
+}
+
+a, a:focus, a:active, a:visited {
+    color: #0000EE;
+}
+
+.btn-success,
+.btn-error,
+.btn-warning,
+.btn-secondary {
+    color: white;
+    border-radius: 4px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.btn-success {
+    background: rgb(28, 184, 65); /* this is a green */
+}
+
+.btn-error {
+    background: rgb(202, 60, 60); /* this is a maroon */
+}
+
+.btn-warning {
+    background: rgb(223, 117, 20); /* this is an orange */
+}
+
+.btn-secondary {
+    background: rgb(66, 184, 221); /* this is a light blue */
+}
+
+.container {
+    margin: 0 auto;
+    width: 100%;
+    max-width: 1024px;
+}
+
+.top-bar {
+    height: 50px;
+    line-height: 50px;
+    padding-bottom: 3px;
+    border-bottom: 1px solid #ddd;
+}
+
+.top-bar .logo {
+    margin-left: 10px;
+    float:left;    
+    height: 50px;
+}
+
+.top-bar .site-name {
+    font-weight: 600;
+    float: left;
+    font-size: 22px;
+}
+
+.top-bar ul.nav-links {
+    list-style-type: none;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    float: right;
+}
+
+.top-bar ul.nav-links > li {
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.content-wrapper {
+    padding-top: 30px;
+    padding-left: 25px;
+    padding-right: 25px;
+}
+
+.message-box {
+    padding: 10px;
+    display: block;
+    display: none;
+    max-width: 500px;
+}
+
+.message-box.error {
+    background: salmon;
+    color: white;
+}
+
+.message-box.success {
+    background: lightgreen;
+    color: white;
+}
+
+.message-box.normal {
+    background: gray;
+    color: white;
+}
+
+.message-box.warning {
+    background: orange;
+    color: white;
+}
+
+.message-box.attention {
+    background: yellow;
+    color: white;
+}
+
+.pure-form label {
+    display: inline-block;
+    width: 100px;
+}
+
+.pure-form .pure-control-group {
+    margin-top: 10px;
+}
+
+.pure-form .pure-control-group:last-child {
+    margin-top: 25px;
+}
+
+.login-form label {
+    width: 100px;
+}
+
+.register-form label {
+    width: 120px;
+}
