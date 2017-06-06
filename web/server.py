@@ -1,7 +1,5 @@
 import logging, signal, time
 from tornado import ioloop, httpserver
-from web.core.app import Application
-
 import tornado.gen
 
 # PATCHES
@@ -54,11 +52,28 @@ def shutdown(http_server):
     ioloop_instance.add_timeout(time.time() + 0.1, finalize)
 
 
-def setup_handlers(app):
-    app_handlers = []
+def setup_application(settings):
+    logging.debug('SETUP APPLICATION')
+    from web.core.app import Application
+    app = Application(settings)
 
+    logging.debug('SETUP SERVICES')
+    from web.services.db import DBAppService
+    from database import metadata
+    db_service = DBAppService(settings['db']['uri'],
+                              connection_string=settings['db']['connection_string'],
+                              metadata=metadata, 
+                              scope=scope, 
+                              scopefunc=scope.get)
+    app.add_service(db_service)
+    from web.services.chat import ChatManager
+    chat_manager = ChatManager(db_service)
+    
+    logging.debug('SETUP APP HANDLERS')
+    app_handlers = []
     import web.handlers.site as site
     import web.handlers.auth as auth
+    import web.handlers.chat as chat    
 
     app_handlers += [
         (r'/', site.IndexHandler),
@@ -68,15 +83,21 @@ def setup_handlers(app):
         
         (r'/register', auth.RegisterHandler),
         (r'/login', auth.LoginHandler),
-        (r'/logout', auth.LogoutHandler)
+        (r'/logout', auth.LogoutHandler),
+
+        (r'/ws/chat', chat.ChatWSHandler, dict(chat_manager=chat_manager)),
+        (r'/chat-groups/add-user', chat.AddUserToChatGroupHandler),
+        (r'/chat-groups/remove-user', chat.RemoveUserFromChatGroupHandler),
+        (r'/chat-groups/get', chat.GetChatGroupsHandler),
+        (r'/chat-groups/create', chat.CreateChatGroupHandler),
     ]
     
-    logging.debug('SETUP APP HANDLERS')
     app.add_handlers(r'.*', app_handlers)
 
+    return app
+
 def start(settings):
-    app = Application(scope, settings)
-    setup_handlers(app)
+    app = setup_application(settings)
     http_server = httpserver.HTTPServer(app)
     http_server.listen(settings['port'], settings['host'])
     register_shutdown_handler(http_server)

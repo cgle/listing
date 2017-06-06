@@ -2,8 +2,8 @@ import os
 import logging
 import argparse
 import config
-import utils
 from web import server
+from utils import dt
 
 def main():
     parser = argparse.ArgumentParser(description='run platform APP')
@@ -27,7 +27,7 @@ def main():
     log_dir = os.path.join(base_dir, 'logs')
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
-    log_path = args.log_path or os.path.join(log_dir, '{date}.log'.format(date=utils.get_today()))
+    log_path = args.log_path or os.path.join(log_dir, '{date}.log'.format(date=dt.get_today()))
 
     if args.out_log_file:
         logging.basicConfig(filename=log_path, filemode='w', level=log_levels[args.log_level.lower()])

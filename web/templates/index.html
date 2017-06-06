@@ -1,17 +1,59 @@
 {% extends "base.html" %}
 
 {% block script %}
-
+<script type="text/javascript" src="/static/js/index.js" defer></script>
+<script type="text/javascript" src="/static/js/chat.js" defer></script>
 {% end %}
 
 {% block content %}
 <div class='pure-g tabs-view'>
-    <div class='pure-u-1 pure-u-md-2-3 tab-view'>
+    <div class='pure-u-1 pure-u-md-17-24 tab-view'>
         
     </div>
     
-    <div class='pure-u-1 pure-u-md-1-3 tab-view'>
-        {% include "chat.html" %}
+    <div class='pure-u-1 pure-u-md-7-24 tab-view'>
+
+        <div class='chat-groups-wrapper'>
+
+            <div class='pure-g chat-groups-controller'>
+                <button class='pure-button btn-secondary open-modal-link' data-target='#switch-chat-group-modal' id='switch-chat-group'>Switch group</button>
+                <button class='pure-button btn-warning open-modal-link' data-target='#create-chat-group-modal' id='create-chat-group'>Create group</button>
+            </div>
+
+            <div class='pure-g chat-groups' id='chat-groups'>
+            </div>
+
+            <div class='modal' id='switch-chat-group-modal'>
+                <div class='modal-content' id='switch-chat-group-modal-content'>
+                    <div class='pure-form'>
+                        Choose a group: 
+                        <select id='switch-chat-group-select'>
+                            {% for group in groups %}
+                            <option value="{{group.id}}">{{group.name}}</option>
+                            {% end %}
+                        </select>
+                        <button class='pure-button btn-secondary' id='switch-chat-group-submit-btn'>Switch</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class='modal' id='create-chat-group-modal'>
+                <div class='modal-content' id='create-chat-group-modal-content'>
+                    <div class='message-box' id='create-chat-group-message-box'></div>
+                    <div class='pure-form'>                        
+                        Group name: <input type='text' id='create-chat-group-input'>
+                        <button class='pure-button btn-warning' id='create-chat-group-submit-btn'>Create</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class='chat-wrapper'>
+            {% if default_group %}
+                {% module Template("chat.html", group=group) %}
+            {% end %}
+        </div>
     </div>
 </div>
 {% end %}

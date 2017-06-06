@@ -1,16 +1,14 @@
-import logging
 from tornado import web
-
-from database.app_db import AppDB
 
 class Application(web.Application):
     
-    def __init__(self, scope, settings):
-        logging.debug('INIT APPLICATION')
+    def __init__(self, settings):
         super(Application, self).__init__([], **settings)
-        
-        # setup DB
-        logging.debug('SETUP DATABASE')
-        from database import metadata
-        self.scope = scope
-        self.db = AppDB(self.settings['db']['uri'], metadata=metadata, scopefunc=self.scope.get)        
+
+    def add_service(self, service):
+        if hasattr(self, service.name):
+            raise RuntimeError('application already set up {} service'.format(service.name))
+        setattr(self, service.name, service)
+
+    def remove_service(self, name):
+        delattr(self, name)

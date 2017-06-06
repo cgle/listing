@@ -1,6 +1,19 @@
-<div class='chat-container'>
-    <div class='chat-friends-list'>
+<div group-name="{{group.name}}" group-id="{{group.id}}" class='chat-container'>
+    <div class='chat-controller'>
+        <h3>Group {{ group.name }}</h3>
+        <span class='popover-link' data-target='#add-user-to-group-popover' id='add-user-to-group-btn'><u>Add user</u></span>
+        <div class='popover' id='add-user-to-group-popover'>
+            <div class='pure-form popover-content'>
+                <input type="text">
+                <button class='pure-button btn-secondary'>Add</button>
+            </div>
+        </div>
     </div>
-    <div class='chat-main'>
+    <div class='chat-messages-box'>
+    </div>
+    <div class='chat-reply-box'>
+        <textarea placeholder='Type a message'></textarea>
+        <button class='pure-button pure-button-primary'>Send</button>
+    </div>
     </div>
 </div>

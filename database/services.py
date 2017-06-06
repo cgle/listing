@@ -1,5 +1,6 @@
 from sqlalchemy import and_
 import database.models as models
+import uuid
 
 class DBService(object):
 
@@ -45,6 +46,12 @@ class DBService(object):
     def filter_by(self, **kwargs):
         limit = kwargs.pop('limit', None)
         return self.db.query(self.Model).filter_by(**kwargs).limit(limit).all()
+
+    def filter_one(self, **kwargs):        
+        items = self.filter_by(**kwargs)
+        if not items:
+            return None
+        return items[0]
 
     def get_by_id(self, id):
         return self.db.query(self.Model).get(id)
@@ -107,15 +114,82 @@ class CollectionService(DBService):
     name = 'collection'
     Model = models.Collection
 
-class ListingService(DBService):
+class ItemService(DBService):
     
-    name = 'listing'
-    Model = models.Listing
+    name = 'item'
+    Model = models.Item
 
 class GroupService(DBService):
     
     name = 'group'
     Model = models.Group
+
+    def create(self, creator_id, group_name):
+        user = self.db.user.get_by_id(creator_id)
+        if not user:
+            raise RuntimeError('invalid user {}'.format(creator_id))
+
+        group = self.filter_one(creator_id=creator_id, name=group_name)
+        if group:
+            raise RuntimeError('user already created group {}'.format(group_name))
+
+        group = self.add(creator_id=creator_id, name=group_name)
+        group.members.append(user)
+        self.db.commit()
+        return group
+        
+    def add_user_by_email(self, email, group_id):
+        user = self.db.user.get_user_by_email(email=email)
+        if not user:
+            raise RuntimeError('invalid user {}'.format(email))
+
+        group = self.get_by_id(group_id)
+        if not group:
+            raise RuntimeError('invalid group {}'.format(group_id))
+       
+        group.members.append(user)
+        self.db.commit()
+
+    def remove_user_by_email(self, email, group_id):
+        user = self.db.user.get_user_by_email(email=email)
+        if not user:
+            raise RuntimeError('invalid user {}'.format(email))
+
+        group = self.get_by_id(group_id)
+        if not group:
+            raise RuntimeError('invalid group {}'.format(group_id))
+
+        group.members.remove(user)
+        self.db.commit()
+
+    def remove_user_by_id(self, user_id, group_id):
+        user = self.db.user.get_by_id(user_id)
+        if not user:
+            raise RuntimeError('invalid user {}'.format(email))
+
+        group = self.get_by_id(group_id)
+        if not group:
+            raise RuntimeError('invalid group {}'.format(group_id))
+
+        group.members.remove(user)
+        self.db.commit()
+
+    def is_creator(self, user_id, group_id):
+        group = self.filter_one(creator_id=user_id, id=group_id)
+        return group is not None
+    
+    def is_member(self, user_id, group_id):
+        group = self.filter_q(models.Group.members.any(id=user_id), id==group_id).first()
+        return group is not None
+
+    def get_groups_by_user(self, user_id):
+        print(user_id)
+        groups = self.filter(models.Group.members.any(id=user_id))
+        return groups
+
+    def get_created_groups_by_user(self, user_id):
+        groups = self.filter_by(creator_id=user_id)
+        return groups
 
 class MessageService(DBService):
     
@@ -127,7 +201,7 @@ def init_services(db):
     services = {service.name: service for service in (
         UserService(db),
         CollectionService(db),
-        ListingService(db),
+        ItemService(db),
         GroupService(db),
         MessageService(db),
     )}

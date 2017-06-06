@@ -11,7 +11,7 @@ class RegisterHandler(WebHandler):
     
     def post(self):
         data = self.get_post_data()
-        email = data['email']
+        email = data['email'].lower()
         password = data['password']
 
         try:
@@ -21,7 +21,7 @@ class RegisterHandler(WebHandler):
                 return self.redirect('/login')
 
             user = self.db.user.add(email=email, password=password)
-            self.set_secure_cookie('app_user', email)
+            self.set_current_user(user)
             self.write('success registered')
             self.finish()
             return
@@ -37,7 +37,7 @@ class LoginHandler(WebHandler):
 
     def post(self):    
         data = self.get_post_data()
-        email = data['email']
+        email = data['email'].lower()
         password = data['password']
         
         try:
@@ -46,8 +46,7 @@ class LoginHandler(WebHandler):
                 self.clear_cookie('app_user')
                 return self.redirect('/login')
         
-            self.set_secure_cookie('app_user', email)
-                
+            self.set_current_user(user)
             self.write('success logged in')
             self.finish()
             return

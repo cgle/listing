@@ -5,7 +5,9 @@ class IndexHandler(WebHandler):
     
     @web.authenticated
     def get(self):
-        return self.render('index.html')
+        groups = self.db.group.get_groups_by_user(self.current_user)
+        default_group = None if not groups else groups[0]
+        return self.render('index.html', groups=groups, default_group=default_group)
 
 class AboutHandler(WebHandler):
     
